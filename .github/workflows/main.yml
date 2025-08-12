@@ -4,13 +4,18 @@ on:
   workflow_dispatch: # 手动触发
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-22.04
 
     steps:
+    - name: Checkout source
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
     - name: Install build dependencies
       run: |
         sudo apt update -y
@@ -28,10 +33,6 @@ jobs:
       run: |
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-
-    - name: Load custom config
-      run: |
-        cp .config .config   # 你的自定义 .config 文件
 
     - name: Compile firmware
       run: make -j$(nproc) V=s
